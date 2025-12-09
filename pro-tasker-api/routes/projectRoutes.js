@@ -1,33 +1,87 @@
 const express = require("express");
-const router = express.Router();
+const { authMiddleware } = require("../middlewares/auth");
+const Project = require("../models/Project");
 
-const { authMiddleware } = require("../middleware/authMid");
+const projectRouter = express.Router();
 
-const {
-  createProject,
-  getAllProjects,
-  getProjectById,
-  updateProject,
-  deleteProject,
-} = require("../controllers/projectController");
+// Protects all rotes in this router
+projectRouter.use(authMiddleware);
 
-//through middleware to check
-router.use(authMiddleware);
+/**
+ * GET /api/projects
+ */
+projectRouter.get("/", async (req, res) => {
+  try {
+    const userProjects = await Project.find({ user: req.user._id });
 
-// GET /api/projects
-// POST /api/projects 
-router
-  .route("/")
-  .get(getAllProjects)
-  .post(createProject);
+    res.json(userProjects);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-// GET /api/projects/:id 
-// PUT /api/projects/:id 
-// DELETE /api/projects/:id 
-router
-  .route("/:id")
-  .get(getProjectById)
-  .put(updateProject)
-  .delete(deleteProject);
+/**
+ * GET /api/projects/:projectId
+ */
+projectRouter.get("/:projectId", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const project = await Project.findById(projectId);
 
-module.exports = router;
+    if (!project) {
+      return res
+        .status(404)
+        .json({ message: `Project with id: ${projectId} not found!` });
+    }
+
+    // Authorization
+    console.log(req.user._id);
+    console.log(project.user);
+    
+    if (project.user.toString() !== req.user._id) {
+      return res.status(403).json({ message: "User is not authorized!" });
+    }
+
+    res.json(project);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/projects
+ */
+projectRouter.post("/", async (req, res) => {
+  try {
+    const newProject = await Project.create({
+      ...req.body,
+      user: req.user._id,
+    });
+
+    res.status(201).json(newProject);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+/**
+ * PUT /api/projects/projectId
+ */
+projectRouter.put("/:projectId", async (req, res) => {
+  res.send("update project....");
+});
+
+
+/**
+ * DELETE /api/projects/projectId
+ */
+projectRouter.delete("/:projectId", async (req, res) => {
+  res.send("delete project....");
+});
+
+module.exports = projectRouter;

@@ -5,7 +5,7 @@ require("dotenv").config();
 
 // Routes
 const projectRoutes = require("./routes/projectRoutes");
-const taskRoutes = require("./routes/taskRoutes");
+const taskRoutes = require("./routes/userRoutes");
 
 const app = express();
 
