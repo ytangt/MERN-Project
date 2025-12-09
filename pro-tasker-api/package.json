@@ -1,0 +1,21 @@
+{
+  "name": "pro-tasker-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+   "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1"
+  }
+}
