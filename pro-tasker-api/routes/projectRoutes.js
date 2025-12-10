@@ -1,6 +1,6 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMid");
-const Project = require("../models/Project");
+const Project = require("../models/Project").default;
 
 const projectRouter = express.Router();
 
@@ -12,7 +12,7 @@ projectRouter.use(authMiddleware);
  */
 projectRouter.get("/", async (req, res) => {
   try {
-    const userProjects = await Project.find({ user: req.user._id });
+    const userProjects = await Project.find({ owner: req.user._id });
 
     res.json(userProjects);
   } catch (error) {
@@ -58,7 +58,7 @@ projectRouter.post("/", async (req, res) => {
   try {
     const newProject = await Project.create({
       ...req.body,
-      user: req.user._id,
+      owner: req.user._id,
     });
 
     res.status(201).json(newProject);

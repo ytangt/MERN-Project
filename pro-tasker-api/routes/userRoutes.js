@@ -6,7 +6,7 @@ const {
   loginUser,
 } = require("../controllers/userController");
 
-const { authMiddleware,  adminOnly, signToken} = require("../middleware/authMid");
+const { authMiddleware, signToken} = require("../middleware/authMid");
 
 // Router
 const userRouter = express.Router();
@@ -14,7 +14,7 @@ const userRouter = express.Router();
 /**
  * GET /api/user/
  */
-userRouter.get("/", authMiddleware, adminOnly, getAllUsers);
+userRouter.get("/", authMiddleware, getAllUsers);
 
 /**
  * GET /api/user/:id

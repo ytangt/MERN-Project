@@ -45,7 +45,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 //Login
   const logIn = async (username: string, password: string): Promise<boolean> => {
     try {
-      const res = await apiClient.post("/user/login", { username, password });
+      const res = await apiClient.post("/users/login", { username, password });
 
       const { user, token } = res.data;
 
@@ -65,7 +65,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     password: string
   ): Promise<boolean> => {
     try {
-      const res = await apiClient.post("/user/register", {
+      const res = await apiClient.post("/users/register", {
         username,
         email,
         password,

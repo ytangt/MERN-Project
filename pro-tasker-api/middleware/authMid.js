@@ -26,14 +26,6 @@ function authMiddleware(req, res, next) {
   }
 }
 
-function adminOnly(req, res, next) {
-  if (req.user && req.user.role === "admin") {
-    return next();
-  } else {
-    return res.status(403).json({ message: "Access denied. Admins only." });
-  }
-}
-
 function signToken({ username, email, _id }) {
   const payload = { username, email, _id };
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
@@ -41,6 +33,5 @@ function signToken({ username, email, _id }) {
 
 module.exports = {
   authMiddleware,
-  adminOnly,
   signToken,
 };

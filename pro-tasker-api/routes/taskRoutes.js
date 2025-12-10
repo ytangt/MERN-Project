@@ -1,7 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMid");
-const Project = require("../models/Project");
-const Task = require("../models/Task");
+const Project = require("../models/Project").default;
+const Task = require("../models/Task").default;
 
 const taskRouter = express.Router({ mergeParams: true });
 
@@ -15,7 +15,7 @@ async function checkProjectOwnership(projectId, userId) {
 
   if (!project) return null;
 
-  if (project.user.toString() !== userId.toString()) return false;
+  if (project.owner.toString() !== userId.toString()) return false;
 
   return project;
 }

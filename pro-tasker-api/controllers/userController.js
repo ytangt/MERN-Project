@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../models/User").default;
 const jwt = require('jsonwebtoken');
 
 const secret = process.env.JWT_SECRET;
@@ -39,9 +39,11 @@ async function registerUser(req, res) {
     const user = await User.create(req.body);
     console.log(user);
 
-    res.status(201).json(user);
+    return res.status(201).json(user);
+
   } catch (error) {
     console.error(error);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 }
 
