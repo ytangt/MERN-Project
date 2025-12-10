@@ -8,5 +8,13 @@ export interface User {
   _id: string;
   username: string;
   email: string;
-  githubId?: string;
+}
+
+export type TaskStatus = "todo" | "in-progress" | "in-review" | "done";
+export interface Task {
+  _id: string;
+  title: string;
+  description?: string;
+  status?: TaskStatus;
+  project: string;     // projectId
 }

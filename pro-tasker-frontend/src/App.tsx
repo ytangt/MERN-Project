@@ -1,23 +1,22 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import HomePage from "./pages/HomePage";
-import ProjectsPage from "./pages/ProjectsPage";
-import NavBar from "./components/NavBar";
-import ProjectDetailsPage from "./pages/ProjectDetailsPage";
-import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
-import TaskPage from "./pages/TaskPage";
 
-// console.log(import.meta.env.VITE_BACKEND_URL);
+import HomePage from "./pages/HomePage";
+import ProjectPage from "./pages/ProjectPage";
+import ProjectDetailsPage from "./pages/ProjectDetailPage";
+import LoginPage from "./pages/AuthPage";
+import RegisterPage from "./pages/AuthPage"; 
+
+import NavBar from "./components/Navbar";
+
 
 function App() {
   return (
     <>
-      <div className="p-5 bg-zinc-900 h-screen">
+      <div>
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<RegisterPage/>} />
           <Route path="/login" element={<LoginPage />} />
 
           {/* <Route path='/projects' element={
@@ -26,7 +25,7 @@ function App() {
             </AuthenticatedRoute>
           }
           /> */}
-          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects" element={<ProjectPage />} />
 
           {/* <Route path='/projects/:projectId' element={ 
             <AuthenticatedRoute>
@@ -35,7 +34,7 @@ function App() {
           }
           /> */}
           <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
-          <Route path="/projects/:projectId/tasks/:taskId" element={<TaskPage />} />
+         
         </Routes>
       </div>
     </>
