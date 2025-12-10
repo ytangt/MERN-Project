@@ -1,7 +1,7 @@
 const Task = require("../models/Task");
 const Project = require("../models/Project");
 
-//helper function to check
+//
 async function verifyProjectOwner(req, res) {
   const project = await Project.findById(req.params.projectId);
 

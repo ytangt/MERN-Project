@@ -1,5 +1,5 @@
 const express = require("express");
-const { authMiddleware } = require("../middlewares/auth");
+const { authMiddleware } = require("../middleware/authMid");
 const Project = require("../models/Project");
 
 const projectRouter = express.Router();
@@ -39,7 +39,7 @@ projectRouter.get("/:projectId", async (req, res) => {
     console.log(req.user._id);
     console.log(project.user);
     
-    if (project.user.toString() !== req.user._id) {
+    if (project.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "User is not authorized!" });
     }
 
