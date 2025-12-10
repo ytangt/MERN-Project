@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import type { User } from "../types";
+import { apiClient } from "../clients/api";
 
 interface AuthContextType {
   user: User | null;
@@ -11,7 +12,6 @@ interface AuthContextType {
   setToken: (token: string) => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
@@ -19,7 +19,7 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  // Check if there is a token in localStorage and set them in state
+  //restore user form localStorage if available 
   const [user, setUser] = useState<User | null>(() => {
     try {
       const value = localStorage.getItem("user");
@@ -42,19 +42,54 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }
   });
 
-  // useEffect(() => {
-  //   try {
+//Login
+  const logIn = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const res = await apiClient.post("/user/login", { username, password });
 
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
+      const { user, token } = res.data;
 
-  const logIn = async (username: string, password: string) => {};
+      setUser(user);
+      setToken(token);
 
-  const register = async (username: string, email: string, password: string) => {};
+      return true;
+    } catch (err) {
+      console.error("Login failed:", err);
+      return false;
+    }
+  };
+//Register
+  const register = async (
+    username: string,
+    email: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      const res = await apiClient.post("/user/register", {
+        username,
+        email,
+        password,
+      });
 
-  const logOut = () => {};
+      const { user, token } = res.data;
+
+      setUser(user);
+      setToken(token);
+
+      return true;
+    } catch (err) {
+      console.error("Register failed:", err);
+      return false;
+    }
+  };
+//Logout
+  const logOut = () => {
+    setUser(null);
+    setToken(null);
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
 
   return (
     <AuthContext.Provider

@@ -1,11 +1,22 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
 
 function Navbar() {
-  return (
-    <nav className="text-white flex justify-around items-center w-full h-10">
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/projects">Projects</NavLink>
-      <NavLink to="/auth">Signin/Signup</NavLink>
+    const auth = useContext(AuthContext);
+    return (
+      <nav>
+      <Link to="/">Home</Link> |{" "}
+      <Link to="/projects">Projects</Link> |{" "}
+
+    {auth?.user ? (
+        <>
+          <span>{auth.user.username}</span>{" "}
+          <button onClick={auth.logOut}>Logout</button>
+        </>
+      ) : (
+        <Link to="/auth">Login / Register</Link>
+      )}
     </nav>
   );
 }

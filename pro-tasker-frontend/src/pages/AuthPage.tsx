@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function AuthPage() {
+  const navigate = useNavigate();
+  
+  //get AuthContext
+  const auth = useContext(AuthContext);
+  if (!auth) {
+    throw new Error("AuthContext is not provided");
+  }
+
+  const { logIn, register } = auth;
+
   const [showRegister, setShowRegister] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -8,12 +20,22 @@ function AuthPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  //HandleLogin
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       setError("");
       setLoading(true);
-      // api call here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
+      const success = await logIn(username, password);
+
+      if (!success) {
+        setError("Invalid username or password");
+        return;
+      }
+
+      navigate("/dashboard");
+
     } catch (error: any) {
       console.error(error.message);
       setError(error.message);
@@ -22,12 +44,21 @@ function AuthPage() {
     }
   };
 
-  const handleRegister = async () => {
+  //Register
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     try {
       setError("");
       setLoading(true);
-      // api call here
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      const success = await register(username, email, password);
+
+      if (!success) {
+        setError("Registration failed");
+        return;
+      }
+      navigate("/dashboard");
     } catch (error: any) {
       console.error(error.message);
       setError(error.message);
@@ -37,8 +68,8 @@ function AuthPage() {
   };
 
   return (
-    <div className="text-white flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mt-10 text-center">
+    <div>
+      <h1>
         Start managing your projects.
       </h1>
 
@@ -49,9 +80,8 @@ function AuthPage() {
       {showRegister ? (
         <form
           onSubmit={handleRegister}
-          className="border mt-10 p-2 h-60 w-150 flex flex-col justify-around items-center rounded"
         >
-          <div className="text-xl font-bold">Register</div>
+          <div>Register</div>
 
           <label htmlFor="username">
             Username:
@@ -61,7 +91,6 @@ function AuthPage() {
               id=""
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="ml-2 border rounded"
             />
           </label>
           <label htmlFor="email">
@@ -72,7 +101,6 @@ function AuthPage() {
               id=""
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="ml-10 border rounded"
             />
           </label>
           <label htmlFor="password">
@@ -83,14 +111,12 @@ function AuthPage() {
               id=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="ml-3 border rounded"
             />
           </label>
 
           <input
             type="submit"
             value="Register"
-            className="border py-2 px-4 rounded"
           />
 
           {/* LOADING  */}
@@ -99,9 +125,8 @@ function AuthPage() {
       ) : (
         <form
           onSubmit={handleLogin}
-          className="border mt-10 p-2 h-60 w-150 flex flex-col justify-around items-center rounded"
         >
-          <div className="text-xl font-bold">Login</div>
+          <div>Login</div>
           <label htmlFor="email">
             Email:
             <input
@@ -110,7 +135,6 @@ function AuthPage() {
               id=""
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="ml-10 border rounded"
             />
           </label>
           <label htmlFor="password">
@@ -121,13 +145,11 @@ function AuthPage() {
               id=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="ml-3 border rounded"
             />
           </label>
           <input
             type="submit"
             value="Register"
-            className="border py-2 px-4 rounded"
           />
 
           {/* LOADING  */}
@@ -140,7 +162,6 @@ function AuthPage() {
         <div>
           Already have an account?{" "}
           <span
-            className="text-blue-500 hover:cursor-pointer"
             onClick={() => setShowRegister(false)}
           >
             Sign in
@@ -150,7 +171,6 @@ function AuthPage() {
         <div>
           Don't have an account?{" "}
           <span
-            className="text-blue-500 hover:cursor-pointer"
             onClick={() => setShowRegister(true)}
           >
             Sign up
