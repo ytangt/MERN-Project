@@ -75,13 +75,13 @@ function TaskPage() {
     <div className="container">
       <h2 className="mb-3">Task Details</h2>
 
-      <ul className="list-group">
+      <div className="list-group">
         <TaskItem
           task={task}
           onStatusChange={updateStatus}
           onDelete={handleDelete}
         />
-      </ul>
+      </div>
 
       <button
         className="btn btn-secondary mt-3"

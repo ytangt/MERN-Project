@@ -1,7 +1,7 @@
-const Task = require("../models/Task");
 const Project = require("../models/Project");
+const Task = require("../models/Task");
 
-//
+//verify project owner
 async function verifyProjectOwner(req, res) {
   const project = await Project.findById(req.params.projectId);
 
@@ -41,7 +41,8 @@ async function createTask(req, res) {
 
   } catch (error) {
     console.error("Create task error:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message,
+      stack: error.stack});
   }
 }
 
@@ -89,7 +90,29 @@ async function updateTask(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
+//getTaskbyID
+async function getTaskById(req, res) {
+  try {
+    const project = await verifyProjectOwner(req, res);
+    if (!project) return;
 
+    const { taskId } = req.params;
+
+    const task = await Task.findOne({
+      _id: taskId,
+      project: project._id,
+    });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.json(task);
+  } catch (error) {
+    console.error("Get task error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 //DeleteTask
 async function deleteTask(req, res) {
   try {
@@ -119,4 +142,5 @@ module.exports = {
   getTasks,
   updateTask,
   deleteTask,
+  getTaskById,
 };

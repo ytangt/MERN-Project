@@ -14,20 +14,13 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-export default function AuthProvider({ children }: AuthProviderProps) {
-  //restore user form localStorage if available 
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
       const value = localStorage.getItem("user");
-      if (value) {
-        return JSON.parse(value);
-      } else return null;
-    } catch (error) {
-      console.error(error);
+      return value ? JSON.parse(value) : null;
+    } catch {
+      return null;
     }
   });
 

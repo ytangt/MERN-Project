@@ -10,17 +10,23 @@ function ProjectDetailsPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const [newTaskTitle, setNewTaskTitle] = useState("");
   const { projectId } = useParams();
 
+  //Edit state for project updates
+  const [editMode, setEditMode] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
         setLoading(true);
         const res = await apiClient.get(`/api/projects/${projectId}`);
-        console.log(res.data);
         setProject(res.data);
+
+        // Fill inputs when entering page
+        setEditName(res.data.name);
+        setEditDescription(res.data.description || "");
       } catch (error: any) {
         console.log(error);
         setError(error.message);
@@ -42,24 +48,24 @@ function ProjectDetailsPage() {
         console.error("Failed to load tasks:", error);
       }
     };
-
     fetchTasks();
   }, [projectId]);
 
-  // Create new task
-  const handleCreateTask = async (e: React.FormEvent) => {
+    //update project
+    const handleUpdateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTaskTitle.trim()) return;
 
     try {
-      const res = await apiClient.post(`/api/projects/${projectId}/tasks`, {
-        title: newTaskTitle,
+      const res = await apiClient.put(`/api/projects/${projectId}`, {
+        name: editName,
+        description: editDescription,
       });
-
-      setTasks((prev) => [...prev, res.data]);
-      setNewTaskTitle("");
-    } catch (err) {
-      console.error("Error creating task:", err);
+       // update UI
+      setProject(res.data); 
+      // close form
+      setEditMode(false);
+    } catch (error) {
+      console.error("Update project failed", error);
     }
   };
 
@@ -68,14 +74,57 @@ function ProjectDetailsPage() {
 
   return (
     <div className="container">
-      <h1 >Project Details</h1>
+      <h1>Project Details</h1>
 
-      {project && 
-      <div className="card p-3 mb-4">
-      <h3 className="card-title">{project.name}</h3>
-      <p className="card-text">{project.description}</p>
-      </div>
-      }
+      {/* ---------- PROJECT CARD ---------- */}
+      {project && (
+        <div className="card p-3 mb-4">
+          {!editMode ? (
+            <>
+              <h3 className="card-title">{project.name}</h3>
+              <p className="card-text">{project.description}</p>
+
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => setEditMode(true)}
+              >
+                Edit Project
+              </button>
+            </>
+          ) : (
+            <form onSubmit={handleUpdateProject}>
+              <div className="mb-2">
+                <label className="form-label">Name</label>
+                <input
+                  className="form-control"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="form-label">Description</label>
+                <input
+                  className="form-control"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
+              </div>
+
+              <button className="btn btn-primary me-2" type="submit">
+                Save
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setEditMode(false)}
+                type="button"
+              >
+                Cancel
+              </button>
+            </form>
+          )}
+        </div>
+      )}
 
       <hr />
 

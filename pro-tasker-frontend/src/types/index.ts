@@ -10,7 +10,7 @@ export interface User {
   email: string;
 }
 
-export type TaskStatus = "todo" | "in-progress" | "in-review" | "done";
+export type TaskStatus = "todo" | "in-progress" | "done";
 export interface Task {
   _id: string;
   title: string;

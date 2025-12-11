@@ -23,10 +23,6 @@ function TaskItem({
         <button 
         className="btn btn-outline-warning btn-sm"
         onClick={() => onStatusChange("in-progress")}>In Progress</button>
-        <button
-          className="btn btn-outline-info btn-sm"
-          onClick={() => onStatusChange("in-review")}>In Review
-        </button>
         <button 
         className="btn btn-outline-info btn-sm"
         onClick={() => onStatusChange("done")}>Done</button>

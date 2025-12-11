@@ -1,5 +1,5 @@
-const Project = require("../models/Project").default;
-const Task = require("../models/Task").default;
+const Project = require("../models/Project");
+const Task = require("../models/Task");
 
 //create project
 async function createProject(req, res) {
@@ -41,13 +41,13 @@ async function getAllProjects(req, res) {
 //get project by ID
 async function getProjectById(req, res) {
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.projectId);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    if (project.owner.toString() !== req.user._id) {
+    if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
@@ -63,13 +63,13 @@ async function getProjectById(req, res) {
 async function updateProject(req, res) {
   try {
     const { name, description } = req.body;
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.projectId);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    if (project.owner.toString() !== req.user._id) {
+    if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
@@ -87,15 +87,17 @@ async function updateProject(req, res) {
 }
 
 //Delete projects
+
 async function deleteProject(req, res) {
+  console.log("DELETE PROJECT HIT", req.params);
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.projectId);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    if (project.owner.toString() !== req.user._id) {
+    if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
 

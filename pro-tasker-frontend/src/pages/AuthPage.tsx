@@ -23,7 +23,6 @@ function AuthPage() {
   //HandleLogin
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
       setError("");
       setLoading(true);
      
@@ -31,24 +30,18 @@ function AuthPage() {
 
       if (!success) {
         setError("Invalid email or password");
+        setLoading(false);
         return;
       }
 
-      navigate("/dashboard");
-
-    } catch (error: any) {
-      console.error(error.message);
-      setError(error.message);
-    } finally {
+      navigate("/projects");
       setLoading(false);
-    }
   };
 
   //Register
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    try {
       setError("");
       setLoading(true);
 
@@ -59,22 +52,18 @@ function AuthPage() {
         return;
       }
       navigate("/dashboard");
-    } catch (error: any) {
-      console.error(error.message);
-      setError(error.message);
-    } finally {
       setLoading(false);
-    }
+      return;
   };
 
   return (
-    <div>
-      <h1>
+    <div className="container d-flex justify-content-center align-items-center">
+      <h1 className="text-center mb-3">
         Start managing your projects.
       </h1>
 
       {/* ERROR  */}
-      {error && <div>{error}</div>}
+      {error && <div className="alert alert-danger py-2">{error}</div>}
 
       {/* FORM  */}
       {showRegister ? (
@@ -120,7 +109,7 @@ function AuthPage() {
           />
 
           {/* LOADING  */}
-          {loading && <div className="animate-pulse">...</div>}
+          {loading && <div>...</div>}
         </form>
       ) : (
         <form
