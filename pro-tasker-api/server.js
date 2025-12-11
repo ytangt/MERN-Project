@@ -21,6 +21,7 @@ app.use(express.json()); // body parser
 app.use(cors({origin: process.env.FRONTEND_URL}));
 
 
+
 // ========= Routes ======================
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/projects", require("./routes/projectRoutes"));

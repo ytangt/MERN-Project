@@ -1,54 +1,92 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { User } from "../types";
 import { apiClient } from "../clients/api";
 
 interface AuthContextType {
   user: User | null;
-  setUser: (user: User | null) => void;
-
-  logIn: (email: string, password: string) => Promise<boolean>;
-  register: (username: string, email: string, password: string) => Promise<boolean>;
-
-  logOut: () => void;
-
   token: string | null;
-  setToken: (token: string | null) => void;
+  isAuthenticated: boolean;
+  register: (data: { username: string; email: string; password: string }) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+//context
+export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
-      const value = localStorage.getItem("user");
-      return value ? JSON.parse(value) : null;
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
     }
   });
 
   const [token, setToken] = useState<string | null>(() => {
-  try {
-    return localStorage.getItem("pt_token") || null; 
-  } catch (error) {
-    console.error(error);
-    return null;  
-  }
-});
+    try {
+      return localStorage.getItem("pt_token") || null;
+    } catch {
+      return null;
+    }
+  });
 
-//Login
-  const logIn = async (email: string, password: string): Promise<boolean> => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
+
+  const navigate = useNavigate();
+
+  // --------------------------
+  // Restore session on refresh
+  // --------------------------
+  useEffect(() => {
+    const savedToken = localStorage.getItem("pt_token");
+    const savedUser = localStorage.getItem("user");
+
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // --------------------------
+  // Register
+  // --------------------------
+  const register = async (data: {
+    username: string;
+    email: string;
+    password: string;
+  }): Promise<boolean> => {
+    try {
+      await apiClient.post("/api/users/register", data);
+      navigate("/login");
+      return true;
+    } catch (err) {
+      console.error("Register failed:", err);
+      return false;
+    }
+  };
+
+  // --------------------------
+  // Login
+  // --------------------------
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const res = await apiClient.post("/api/users/login", { email, password });
 
-      const { user, token } = res.data;
+      const { token, user } = res.data;
+
+      // Save local session
+      localStorage.setItem("pt_token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       setUser(user);
       setToken(token);
+      setIsAuthenticated(true);
 
-      //token key 
-      localStorage.setItem("pt_token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      navigate("/projects");
 
       return true;
     } catch (err) {
@@ -56,45 +94,31 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       return false;
     }
   };
-//Register
-  const register = async (
-    username: string,
-    email: string,
-    password: string
-  ): Promise<boolean> => {
-    try {
-      const res = await apiClient.post("/api/users/register", {
-        username,
-        email,
-        password,
-      });
 
-      const { user, token } = res.data;
+  // --------------------------
+  // Logout
+  // --------------------------
+  const logout = () => {
+    localStorage.removeItem("pt_token");
+    localStorage.removeItem("user");
 
-    setUser(user);
-    setToken(token);
-
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("pt_token", token);
-
-    return true;
-  } catch (err) {
-    console.error("Register failed:", err);
-    return false;
-  }
-};
-//Logout
-  const logOut = () => {
     setUser(null);
     setToken(null);
+    setIsAuthenticated(false);
 
-    localStorage.removeItem("user");
-    localStorage.removeItem("pt_token");
+    navigate("/login");
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, logIn, register, logOut, token, setToken }}
+      value={{
+        user,
+        token,
+        isAuthenticated,
+        register,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

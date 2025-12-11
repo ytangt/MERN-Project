@@ -6,7 +6,7 @@ const expiration = "24h";
 function authMiddleware(req, res, next) {
   console.log("AUTH HEADER:", req.headers.authorization);
   
-  let token = req.headers.authorization || req.body?.token || req.query?.token;
+  let token = req.body?.token || req.query?.token;
 
   // Extract Bearer token
   if (req.headers.authorization) {
@@ -15,18 +15,29 @@ function authMiddleware(req, res, next) {
 
   // If no token found
   if (!token) {
-    return res.status(403).json({ message: "Please login" });
+    // next();
+     res.status(403).json({message: "Please login"})
   }
 
+  //this is better
+  // if (!token) {
+  //   return res.status(403).json({ message: "You must be logged in" });
+  // }
+  
+  // If token can be verified, add the decoded user's data to the request so it can be accessed in the resolver
   try {
     const { data } = jwt.verify(token, secret, { maxAge: expiration });
     req.user = data;
-    next(); // authentication success 
-  } catch (err) {
-    console.log("Invalid token:", err.message);
-    return res.status(401).json({ message: "Invalid or expired token" });
+  } catch {
+    console.log("Invalid token");
+   
   }
+  next();
 }
+
+
+
+
 
 function signToken({ username, email, _id }) {
   const payload = { username, email, _id };
