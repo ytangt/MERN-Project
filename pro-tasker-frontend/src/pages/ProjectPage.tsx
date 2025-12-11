@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../clients/api";
+import { useNavigate } from "react-router-dom";
 import type { Project } from "../types";
 import ProjectCard from "../components/ProjectCard";
 
@@ -10,6 +11,7 @@ function ProjectsPage() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const navigate = useNavigate();
 
   //Fetch all projects
   useEffect(() => {
@@ -21,6 +23,10 @@ function ProjectsPage() {
         setProjects(res.data);
       } catch (error: any) {
         console.log(error);
+        if (error.response?.status === 403) {
+          navigate("/auth");
+          return;
+        }
         setError(error.message);
       } finally {
         setLoading(false);

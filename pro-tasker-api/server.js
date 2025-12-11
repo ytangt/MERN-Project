@@ -20,7 +20,8 @@ app.use(morgan('dev')); // logger
 app.use(express.json()); // body parser
 app.use(cors({origin: [
       "http://localhost:5173",
-      "https://superlative-conkies-fc7c4e.netlify.app"
+      "https://superlative-conkies-fc7c4e.netlify.app",
+      "https://pro-tasker-api.onrender.com"
     ],
     credentials: true,}));
 

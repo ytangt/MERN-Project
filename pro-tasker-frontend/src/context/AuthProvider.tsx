@@ -61,7 +61,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   }): Promise<boolean> => {
     try {
       await apiClient.post("/api/users/register", data);
-      navigate("/login");
+      navigate("/auth");
       return true;
     } catch (err) {
       console.error("Register failed:", err);
@@ -106,7 +106,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     setToken(null);
     setIsAuthenticated(false);
 
-    navigate("/login");
+    navigate("/");
   };
 
   return (

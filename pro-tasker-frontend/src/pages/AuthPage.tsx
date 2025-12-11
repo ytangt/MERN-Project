@@ -53,9 +53,18 @@ function AuthPage() {
         setError("Registration failed");
         return;
       }
-      navigate("/dashboard");
+
+      const autoLoginSuccess = await login(email, password);
+      //Auto Login
+      if (!autoLoginSuccess) {
+        setError("Auto login failed");
+        setLoading(false);
+        return;
+      }
+      navigate("/projects");
       setLoading(false);
       return;
+      
   };
 
   return (

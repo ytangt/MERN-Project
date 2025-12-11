@@ -12,7 +12,7 @@ function Navbar() {
     {auth?.user ? (
         <>
           <span>{auth.user.username}</span>{" "}
-          <button className="btn btn-outline-light btn-sm" onClick={auth.logOut}>Logout</button>
+          <button className="btn btn-outline-light btn-sm" onClick={auth.logout}>Logout</button>
         </>
       ) : (
         <Link className="navbar-brand fw-bold" to="/auth">Login / Register</Link>
