@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../clients/api";
-import { Link } from "react-router-dom";
 import type { Project } from "../types";
+import ProjectCard from "../components/ProjectCard";
 
 function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -11,6 +11,7 @@ function ProjectsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
+  //Fetch all projects
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -25,12 +26,11 @@ function ProjectsPage() {
         setLoading(false);
       }
     };
-
+  
     fetchProjects();
   }, []);
 
-  if (loading) return <div className="text-3xl text-white">Loading...</div>;
-
+  //Create Project
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -46,54 +46,67 @@ function ProjectsPage() {
       setName("")
       setDescription("")
     }
-  };
+  };  
+  
+  //Delete Porject
+  const handleDelete = async (projectId: string) => {
+  try {
+    await apiClient.delete(`/api/projects/${projectId}`);
+
+    setProjects(prev => prev.filter(p => p._id !== projectId));
+  } catch (err) {
+    console.error("Delete failed", err);
+    setError("Failed to delete project");
+  }
+};
+
+  if (loading) return <div className="text-center mt-4">Loading...</div>;
+
   return (
     <div>
-      <h1>Projects</h1>
-
-      <form
-        onSubmit={handleSubmit}
+      <h1 className="mb-4">Projects</h1>
+      {/* ---------- CREATE PROJECT FORM ---------- */}
+      <form className="border rounded p-3 bg-light mb-4"
+      onSubmit={handleSubmit}
       >
+
         <label htmlFor="project-name">Project Name: </label>
-        <input
-          type="text"
-          name="project-name"
-          className="border"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      
+        <div className="mb-2">
+          <input
+            type="text"
+            name="project-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
 
+        
         <label htmlFor="project-description">Project Description</label>
-        <input
-          type="text"
-          name="project-description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <div className="mb-2">
+            <input
+            type="text"
+            name="project-description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
 
-        <input
-          type="submit"
-          value="Create Project"
-        />
+        <button className="btn btn-primary w-100 mt-2" type="submit">
+            Create Project
+        </button>
       </form>
 
       {error && <div>{error}</div>}
 
       <div>
-        {projects &&
-          projects.map((project) => (
-            <div
-              key={project._id}
-            >
-              <div>{project.name}</div>
-              <div>{project.description}</div>
-              <Link
-                to={`/projects/${project._id}`}
-              >
-                See Project
-              </Link>
-            </div>
-          ))}
+        {projects.map((project) => (
+        <ProjectCard
+          key={project._id}
+          project={project}
+          onDelete={handleDelete}
+        />
+      ))}
       </div>
     </div>
   );

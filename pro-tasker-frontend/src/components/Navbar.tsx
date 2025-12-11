@@ -5,17 +5,17 @@ import { AuthContext } from "../context/AuthProvider";
 function Navbar() {
     const auth = useContext(AuthContext);
     return (
-      <nav>
-      <Link to="/">Home</Link> |{" "}
-      <Link to="/projects">Projects</Link> |{" "}
+      <nav className="navbar navbar-dark bg-dark px-3 mb-4">
+      <Link className="navbar-brand fw-bold" to="/">Home</Link> |{" "}
+      <Link className="navbar-brand fw-bold" to="/projects">Projects</Link> |{" "}
 
     {auth?.user ? (
         <>
           <span>{auth.user.username}</span>{" "}
-          <button onClick={auth.logOut}>Logout</button>
+          <button className="btn btn-outline-light btn-sm" onClick={auth.logOut}>Logout</button>
         </>
       ) : (
-        <Link to="/auth">Login / Register</Link>
+        <Link className="navbar-brand fw-bold" to="/auth">Login / Register</Link>
       )}
     </nav>
   );

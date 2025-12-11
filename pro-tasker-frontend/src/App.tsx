@@ -11,8 +11,8 @@ import TaskPage from "./pages/TaskPage";
 function App() {
   return (
     <>
-      <div>
       <Navbar />
+      <div className="container py-4">
         <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/auth" element={<AuthPage />} />

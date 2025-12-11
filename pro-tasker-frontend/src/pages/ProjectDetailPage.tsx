@@ -3,6 +3,7 @@ import { apiClient } from "../clients/api";
 import { useParams } from "react-router-dom";
 import type { Project,Task} from "../types";
 import { Link } from "react-router-dom";
+import TaskForm from "../components/TaskForm";
 
 function ProjectDetailsPage() {
   const [project, setProject] = useState<Project | null>(null);
@@ -66,26 +67,31 @@ function ProjectDetailsPage() {
   if (error) return <div>Error loading Project</div>;
 
   return (
-    <div >
+    <div className="container">
       <h1 >Project Details</h1>
 
-      <div >
-        <div >{project?.name}</div>
-        <div >{project?.description}</div>
+      {project && 
+      <div className="card p-3 mb-4">
+      <h3 className="card-title">{project.name}</h3>
+      <p className="card-text">{project.description}</p>
       </div>
+      }
 
       <hr />
 
         {/* ------------ TASK LIST ------------ */}
-        <h2>Tasks</h2>
+        <h2 className="mt-4">Tasks</h2>
 
         {tasks.length === 0 ? (
-          <p>No tasks yet.</p>
+          <p className="text-muted">No tasks yet.</p>
         ) : (
-          <ul>
+          <ul className="list-group mb-3">
             {tasks.map((task) => (
-              <li key={task._id}>
-                <Link to={`/projects/${projectId}/tasks/${task._id}`}>
+              <li key={task._id}
+              className="list-group-item d-flex justify-content-between align-items-center">
+                <Link
+                className="btn btn-sm btn-outline-primary" 
+                to={`/projects/${projectId}/tasks/${task._id}`}>
                   {task.title}
                 </Link>
               </li>
@@ -94,15 +100,20 @@ function ProjectDetailsPage() {
         )}
 
         {/* ------------ CREATE NEW TASK ------------ */}
-        <form onSubmit={handleCreateTask}>
-          <input
-            type="text"
-            placeholder="New task..."
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-          />
-          <button type="submit">Add Task</button>
-        </form>
+      <TaskForm
+  onSubmit={async (title, description) => {
+    try {
+      const res = await apiClient.post(`/api/projects/${projectId}/tasks`, {
+        title,
+        description,
+      });
+
+      setTasks((prev) => [...prev, res.data]);
+    } catch (err) {
+      console.error("Error creating task:", err);
+    }
+  }}
+/> 
       </div>
     );
   }

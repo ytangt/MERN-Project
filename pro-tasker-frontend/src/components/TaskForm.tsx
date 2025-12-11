@@ -12,21 +12,25 @@ function TaskForm({ onSubmit }: { onSubmit: (title: string, desc: string) => voi
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Title:
-        <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      </label>
-
-      <label>
-        Description:
+    <form className="border rounded p-3 bg-light mb-3" onSubmit={handleSubmit}>
+      <label className="form-label">Title</label>
         <input
+          className="form-control"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter task title"
+          required
+        />
+
+      <label className="form-label">Description</label>
+        <input
+          className="form-control"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder="Enter description"
         />
-      </label>
 
-      <button type="submit">Add Task</button>
+      <button className="btn btn-primary w-100 mt-3" type="submit">Add Task</button>
     </form>
   );
 }
