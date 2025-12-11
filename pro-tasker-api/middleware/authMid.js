@@ -4,6 +4,8 @@ const secret = process.env.JWT_SECRET;
 const expiration = "24h";
 
 function authMiddleware(req, res, next) {
+  console.log("AUTH HEADER:", req.headers.authorization);
+  
   let token = req.headers.authorization || req.body?.token || req.query?.token;
 
   // Extract Bearer token
@@ -30,6 +32,8 @@ function signToken({ username, email, _id }) {
   const payload = { username, email, _id };
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
+
+
 
 module.exports = {
   authMiddleware,

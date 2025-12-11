@@ -44,6 +44,34 @@ taskRouter.get("/", async (req, res) => {
 });
 
 /**
+ * GET /api/projects/:projectId/tasks/:taskId
+ */
+taskRouter.get("/:taskId", async (req, res) => {
+  try {
+    const { projectId, taskId } = req.params;
+
+    // Authorization
+    const project = await checkProjectOwnership(projectId, req.user._id);
+    if (project === null) {
+      return res.status(404).json({ message: "Project not found!" });
+    }
+    if (project === false) {
+      return res.status(403).json({ message: "Not authorized to view tasks." });
+    }
+
+    const task = await Task.findOne({ _id: taskId, project: projectId });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found!" });
+    }
+
+    res.json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+/**
  * POST /api/projects/:projectId/tasks
  */
 taskRouter.post("/", async (req, res) => {

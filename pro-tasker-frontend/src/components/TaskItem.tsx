@@ -15,9 +15,9 @@ function TaskItem({
       <p>{task.description}</p>
       <p>Status: {task.status}</p>
 
-      <button onClick={() => onStatusChange("To Do")}>To Do</button>
-      <button onClick={() => onStatusChange("In Progress")}>In Progress</button>
-      <button onClick={() => onStatusChange("Done")}>Done</button>
+      <button onClick={() => onStatusChange("todo")}>To Do</button>
+      <button onClick={() => onStatusChange("in-progress")}>In Progress</button>
+      <button onClick={() => onStatusChange("done")}>Done</button>
 
       <button onClick={onDelete}>Delete</button>
     </div>

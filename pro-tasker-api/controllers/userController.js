@@ -37,9 +37,16 @@ async function registerUser(req, res) {
 
     // Create new user
     const user = await User.create(req.body);
-    console.log(user);
+    const payload = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
 
-    return res.status(201).json(user);
+    const token = jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+
+    return res.status(201).json({ user, token });
 
   } catch (error) {
     console.error(error);

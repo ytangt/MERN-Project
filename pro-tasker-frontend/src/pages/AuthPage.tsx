@@ -27,10 +27,10 @@ function AuthPage() {
       setError("");
       setLoading(true);
      
-      const success = await logIn(username, password);
+      const success = await logIn(email, password);
 
       if (!success) {
-        setError("Invalid username or password");
+        setError("Invalid email or password");
         return;
       }
 
@@ -149,7 +149,7 @@ function AuthPage() {
           </label>
           <input
             type="submit"
-            value="Register"
+            value="Login"
           />
 
           {/* LOADING  */}

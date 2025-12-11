@@ -22,7 +22,7 @@ function TaskPage() {
       try {
         setLoading(true);
         const res = await apiClient.get(
-          `/projects/${projectId}/tasks/${taskId}`
+          `/api/projects/${projectId}/tasks/${taskId}`
         );
 
         const data: Task = res.data;
@@ -50,7 +50,7 @@ function TaskPage() {
     try {
       setLoading(true);
 
-      await apiClient.put(`/projects/${projectId}/tasks/${taskId}`, {
+      await apiClient.put(`/api/projects/${projectId}/tasks/${taskId}`, {
         title,
         description,
         status,
@@ -70,7 +70,7 @@ function TaskPage() {
     try {
       setLoading(true);
 
-      await apiClient.delete(`/projects/${projectId}/tasks/${taskId}`);
+      await apiClient.delete(`/api/projects/${projectId}/tasks/${taskId}`);
 
       navigate(`/projects/${projectId}`);
     } catch (err: any) {
