@@ -64,3 +64,11 @@ MongoDB via Mongoose
 Response JSON sent back to client
        ↓
 React updates UI and state
+
+## Live Demo
+
+Frontend (Netlify):
+https://superlative-conkies-fc7c4e.netlify.app
+
+Backend API (Render):
+https://mern-project-oz54.onrender.com

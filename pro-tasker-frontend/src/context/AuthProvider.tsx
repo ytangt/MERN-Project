@@ -64,7 +64,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       navigate("/auth");
       return true;
     } catch (err) {
-      console.error("Register failed:", err);
       return false;
     }
   };
