@@ -28,6 +28,8 @@ function getUserById(req, res) {
 //register
 async function registerUser(req, res) {
   try {
+    console.log("HEADERS:", req.headers);
+    console.log("RAW BODY:", req.body);
     // check if user exists
     const dbUser = await User.findOne({ email: req.body.email });
 

@@ -21,6 +21,7 @@ function App() {
         <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
         <Route path="/projects/:projectId/tasks/:taskId" element={<TaskPage />} />
 
+
         </Routes>
       </div>
     </>

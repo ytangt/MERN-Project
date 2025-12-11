@@ -18,14 +18,19 @@ const app = express();
 // ========= Middlewares =================
 app.use(morgan('dev')); // logger
 app.use(express.json()); // body parser
-app.use(cors({origin: process.env.FRONTEND_URL}));
+app.use(cors({origin: [
+      "http://localhost:5173",
+      "https://superlative-conkies-fc7c4e.netlify.app"
+    ],
+    credentials: true,}));
 
 
 
 // ========= Routes ======================
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/projects", require("./routes/projectRoutes"));
 app.use("/api/projects/:projectId/tasks", require("./routes/taskRoutes"));
+app.use("/api/projects", require("./routes/projectRoutes"));
+
 
 // Use this route to setup the API documentation
 app.get('/', (req, res) => {

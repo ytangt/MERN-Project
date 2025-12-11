@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 function AuthPage() {
   const navigate = useNavigate();
-  
+  console.log("BACKEND URL =>", import.meta.env.VITE_BACKEND_URL);
+
   //get AuthContext
   const auth = useContext(AuthContext);
   if (!auth) {
     throw new Error("AuthContext is not provided");
   }
 
-  const { logIn, register } = auth;
+  const { login, register } = auth;
 
   const [showRegister, setShowRegister] = useState(true);
   const [username, setUsername] = useState("");
@@ -26,7 +27,7 @@ function AuthPage() {
       setError("");
       setLoading(true);
      
-      const success = await logIn(email, password);
+      const success = await login(email, password);
 
       if (!success) {
         setError("Invalid email or password");
@@ -45,7 +46,8 @@ function AuthPage() {
       setError("");
       setLoading(true);
 
-      const success = await register(username, email, password);
+      const success = await register({username,email,password
+      });
 
       if (!success) {
         setError("Registration failed");
