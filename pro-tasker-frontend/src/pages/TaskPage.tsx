@@ -35,7 +35,7 @@ function TaskPage() {
   }, [projectId, taskId]);
 
   // Handle UPDATE
-  const updateStatus = async (status: TaskStatus) => {
+  const updateStatus = async (status?: TaskStatus) => {
     try {
       await apiClient.put(`/api/projects/${projectId}/tasks/${taskId}`, {
         ...task,

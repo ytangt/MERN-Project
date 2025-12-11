@@ -4,12 +4,15 @@ import { apiClient } from "../clients/api";
 
 interface AuthContextType {
   user: User | null;
-  setUser: (user: User) => void;
-  logIn: (username: string, password: string) => void;
-  register: (username: string, email: string, password: string) => void;
+  setUser: (user: User | null) => void;
+
+  logIn: (email: string, password: string) => Promise<boolean>;
+  register: (username: string, email: string, password: string) => Promise<boolean>;
+
   logOut: () => void;
+
   token: string | null;
-  setToken: (token: string) => void;
+  setToken: (token: string | null) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
